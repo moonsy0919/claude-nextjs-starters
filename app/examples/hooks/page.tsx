@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   useCounter,
   useToggle,
@@ -8,8 +8,10 @@ import {
   useDebounceValue,
   useCopyToClipboard,
   useMediaQuery,
+  useWindowSize,
+  useOnClickOutside,
 } from "usehooks-ts";
-import { Copy, Check, Monitor, Smartphone } from "lucide-react";
+import { Copy, Check, Monitor, Smartphone, Maximize2, PanelTop } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -146,7 +148,8 @@ function CopyToClipboardDemo() {
 }
 
 function MediaQueryDemo() {
-  const isMd = useMediaQuery("(min-width: 768px)");
+  // initializeWithValue: false로 SSR/클라이언트 초기값을 동일하게 유지해 hydration 불일치 방지
+  const isMd = useMediaQuery("(min-width: 768px)", { initializeWithValue: false });
 
   return (
     <div className="flex items-center gap-3">
@@ -161,13 +164,72 @@ function MediaQueryDemo() {
   );
 }
 
+function WindowSizeDemo() {
+  // initializeWithValue: false로 SSR/클라이언트 초기값을 동일하게 유지해 hydration 불일치 방지
+  const { width, height } = useWindowSize({ initializeWithValue: false });
+  const breakpoint =
+    (width ?? 0) >= 1280 ? "xl"
+    : (width ?? 0) >= 1024 ? "lg"
+    : (width ?? 0) >= 768 ? "md"
+    : (width ?? 0) >= 640 ? "sm"
+    : "xs";
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <Maximize2 className="h-4 w-4 text-muted-foreground" />
+        <span className="font-mono text-sm">
+          {width ?? "—"} × {height ?? "—"} px
+        </span>
+      </div>
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-muted-foreground">Tailwind 브레이크포인트:</span>
+        <Badge className="font-mono">{breakpoint}</Badge>
+      </div>
+      <p className="text-xs text-muted-foreground">브라우저 창 크기를 조절해보세요.</p>
+    </div>
+  );
+}
+
+function ClickOutsideDemo() {
+  const [isOpen, setIsOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // useOnClickOutside는 RefObject<HTMLElement>를 요구하므로 타입 단언
+  useOnClickOutside(panelRef as React.RefObject<HTMLElement>, () => setIsOpen(false));
+
+  return (
+    <div className="space-y-3">
+      <Button size="sm" onClick={() => setIsOpen(true)} disabled={isOpen}>
+        <PanelTop className="mr-1.5 h-3.5 w-3.5" />
+        패널 열기
+      </Button>
+      {isOpen && (
+        <div
+          ref={panelRef}
+          className="rounded-lg border bg-card p-4 shadow-md space-y-2"
+        >
+          <p className="text-sm font-medium">패널이 열렸습니다</p>
+          <p className="text-xs text-muted-foreground">패널 바깥을 클릭하면 자동으로 닫힙니다.</p>
+          <Button size="sm" variant="outline" onClick={() => setIsOpen(false)}>
+            닫기
+          </Button>
+        </div>
+      )}
+      {!isOpen && (
+        <p className="text-xs text-muted-foreground">패널이 닫혀있습니다.</p>
+      )}
+    </div>
+  );
+}
+
 export default function HooksPage() {
   return (
     <div className="py-8">
       <Container>
         <PageHeader
           title="usehooks-ts 예제"
-          description="자주 쓰이는 커스텀 훅들을 실제로 동작하는 예제와 함께 확인하세요."
+          description="useLocalStorage, useDebounce, useWindowSize 등 실무에서 자주 쓰이는 커스텀 훅을 직접 체험하세요."
           className="mb-10"
         />
         <div className="grid gap-6 sm:grid-cols-2">
@@ -217,6 +279,22 @@ export default function HooksPage() {
             description="CSS 미디어 쿼리를 React 상태로 구독합니다. 창 크기를 조절해보세요."
           >
             <MediaQueryDemo />
+          </HookCard>
+
+          <HookCard
+            title="창 크기"
+            hook="useWindowSize"
+            description="현재 브라우저 창의 너비·높이를 실시간으로 반환합니다. Tailwind 브레이크포인트도 함께 표시합니다."
+          >
+            <WindowSizeDemo />
+          </HookCard>
+
+          <HookCard
+            title="바깥 클릭 감지"
+            hook="useOnClickOutside"
+            description="지정한 요소 바깥을 클릭하면 콜백을 실행합니다. 드롭다운·팝오버 닫기 패턴에 유용합니다."
+          >
+            <ClickOutsideDemo />
           </HookCard>
         </div>
       </Container>
