@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { ClientFetchExample } from "./ClientFetchExample";
+import { ErrorFetchExample } from "./ErrorFetchExample";
 
 type Post = { id: number; title: string; category: string };
 
@@ -54,12 +55,13 @@ export default function DataFetchingPage() {
       <Container>
         <PageHeader
           title="데이터 페칭"
-          description="Server Component와 Client Component 방식의 데이터 페칭 패턴을 비교해보세요."
+          description="API 호출, 로딩 상태, 에러 처리 등 데이터 관리의 세 가지 핵심 패턴을 확인하세요."
           className="mb-10"
         />
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <ServerFetchSection />
           <ClientFetchExample />
+          <ErrorFetchExample />
         </div>
       </Container>
     </div>
