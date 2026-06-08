@@ -48,7 +48,7 @@ export default function LayoutsPage() {
       <Container>
         <PageHeader
           title="레이아웃 예제"
-          description="Tailwind CSS Grid/Flex를 활용한 다양한 레이아웃 패턴입니다."
+          description="그리드, 벤토, 사이드바, 반응형 스택 등 Tailwind CSS로 구현하는 다양한 레이아웃 패턴을 확인하세요."
           className="mb-10"
         />
         <div className="space-y-10">
@@ -109,6 +109,54 @@ export default function LayoutsPage() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </LayoutSection>
+
+          <LayoutSection title="사이드바 레이아웃" code="flex gap-4">
+            <div className="flex gap-4">
+              <Card className="w-44 shrink-0">
+                <CardContent className="py-4 px-3">
+                  <nav className="flex flex-col gap-1">
+                    {["대시보드", "프로젝트", "팀원", "설정"].map((item, i) => (
+                      <div
+                        key={item}
+                        className={`rounded-md px-3 py-2 text-sm cursor-pointer transition-colors ${
+                          i === 0
+                            ? "bg-primary/10 text-primary font-medium"
+                            : "text-muted-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </nav>
+                </CardContent>
+              </Card>
+              <Card className="flex-1 flex items-center justify-center h-40">
+                <CardContent className="p-0 text-sm text-muted-foreground">
+                  메인 콘텐츠 영역 (flex-1)
+                </CardContent>
+              </Card>
+            </div>
+          </LayoutSection>
+
+          <LayoutSection title="반응형 스택 → 그리드" code="flex flex-col sm:grid sm:grid-cols-2">
+            <p className="mb-3 text-xs text-muted-foreground">
+              창 너비를 줄여보세요 — sm(640px) 미만에서는 세로로 쌓이고, 이상에서는 2컬럼 그리드가 됩니다.
+            </p>
+            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4">
+              <Card className="flex h-20 items-center justify-center bg-muted/40">
+                <CardContent className="p-0 text-sm text-muted-foreground">카드 A</CardContent>
+              </Card>
+              <Card className="flex h-20 items-center justify-center bg-muted/40">
+                <CardContent className="p-0 text-sm text-muted-foreground">카드 B</CardContent>
+              </Card>
+              <Card className="flex h-20 items-center justify-center bg-muted/40">
+                <CardContent className="p-0 text-sm text-muted-foreground">카드 C</CardContent>
+              </Card>
+              <Card className="flex h-20 items-center justify-center bg-muted/40">
+                <CardContent className="p-0 text-sm text-muted-foreground">카드 D</CardContent>
+              </Card>
             </div>
           </LayoutSection>
         </div>
