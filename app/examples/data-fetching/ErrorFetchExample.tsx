@@ -32,7 +32,7 @@ export function ErrorFetchExample() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const fetch = async () => {
+  const handleFetch = async () => {
     setStatus("loading");
     setPosts([]);
     setErrorMsg("");
@@ -54,7 +54,7 @@ export function ErrorFetchExample() {
             <CardTitle className="text-base">에러 처리</CardTitle>
             <Badge variant="secondary">try / catch</Badge>
           </div>
-          <Button size="sm" variant="outline" onClick={fetch} disabled={status === "loading"}>
+          <Button size="sm" variant="outline" onClick={handleFetch} disabled={status === "loading"}>
             <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${status === "loading" ? "animate-spin" : ""}`} />
             {status === "idle" ? "불러오기" : "재시도"}
           </Button>

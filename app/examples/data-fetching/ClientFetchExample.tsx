@@ -24,12 +24,16 @@ export function ClientFetchExample() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 초기 로드: loading이 true로 초기화돼 있으므로 setState 없이 바로 fetch
+  // 초기 로드: cleanup 함수로 언마운트 후 setState 호출 방지
   useEffect(() => {
+    let cancelled = false;
     loadPosts().then((data) => {
-      setPosts(data);
-      setLoading(false);
+      if (!cancelled) {
+        setPosts(data);
+        setLoading(false);
+      }
     });
+    return () => { cancelled = true; };
   }, []);
 
   // 다시 불러오기: 이벤트 핸들러에서 상태 초기화 후 fetch

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTheme } from "next-themes";
+import { useIsMounted } from "usehooks-ts";
 import { toast } from "sonner";
 import { Laptop, LogOut, Shield } from "lucide-react";
 import { Container } from "@/components/layout/Container";
@@ -20,11 +21,7 @@ import { Separator } from "@/components/ui/separator";
 
 function ThemeCard() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   return (
     <Card>
@@ -35,8 +32,8 @@ function ThemeCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* mounted 전에는 빈 문자열로 controlled 상태를 유지해 hydration 불일치 방지 */}
-        <RadioGroup value={mounted ? (theme ?? "") : ""} onValueChange={setTheme} className="space-y-3">
+        {/* isMounted() 전에는 빈 문자열로 controlled 상태를 유지해 hydration 불일치 방지 */}
+        <RadioGroup value={isMounted() ? (theme ?? "") : ""} onValueChange={setTheme} className="space-y-3">
           {[
             { value: "light", label: "라이트 모드" },
             { value: "dark", label: "다크 모드" },

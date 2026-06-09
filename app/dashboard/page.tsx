@@ -1,5 +1,3 @@
-"use client";
-
 import { Users, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +7,19 @@ import { DataTable } from "@/components/shared/DataTable";
 import { formatNumber, formatCurrency } from "@/lib/format";
 import { formatRelativeDate } from "@/lib/date";
 import type { Column } from "@/components/shared/DataTable";
+
+export const dynamic = "force-dynamic";
+
+async function getRecentOrders(): Promise<Order[]> {
+  const now = Date.now();
+  return [
+    { id: "#1042", customer: "김민수", status: "완료", amount: 128000, date: new Date(now - 1000 * 60 * 30).toISOString() },
+    { id: "#1041", customer: "이지은", status: "처리중", amount: 75000, date: new Date(now - 1000 * 60 * 120).toISOString() },
+    { id: "#1040", customer: "박준혁", status: "완료", amount: 320000, date: new Date(now - 1000 * 60 * 60 * 5).toISOString() },
+    { id: "#1039", customer: "최수연", status: "취소", amount: 56000, date: new Date(now - 1000 * 60 * 60 * 24).toISOString() },
+    { id: "#1038", customer: "정태양", status: "완료", amount: 198000, date: new Date(now - 1000 * 60 * 60 * 48).toISOString() },
+  ];
+}
 
 const stats = [
   { label: "총 사용자", value: 12489, icon: Users, change: "+12%", up: true },
@@ -24,14 +35,6 @@ interface Order {
   amount: number;
   date: string;
 }
-
-const recentOrders: Order[] = [
-  { id: "#1042", customer: "김민수", status: "완료", amount: 128000, date: new Date(Date.now() - 1000 * 60 * 30).toISOString() },
-  { id: "#1041", customer: "이지은", status: "처리중", amount: 75000, date: new Date(Date.now() - 1000 * 60 * 120).toISOString() },
-  { id: "#1040", customer: "박준혁", status: "완료", amount: 320000, date: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString() },
-  { id: "#1039", customer: "최수연", status: "취소", amount: 56000, date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() },
-  { id: "#1038", customer: "정태양", status: "완료", amount: 198000, date: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString() },
-];
 
 const statusVariant: Record<Order["status"], "default" | "secondary" | "destructive"> = {
   완료: "default",
@@ -62,7 +65,9 @@ const columns: Column<Order>[] = [
   },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const recentOrders = await getRecentOrders();
+
   return (
     <div className="py-8">
       <Container>
@@ -107,7 +112,7 @@ export default function DashboardPage() {
             <CardTitle>최근 주문</CardTitle>
           </CardHeader>
           <CardContent>
-            <DataTable columns={columns} data={recentOrders} pageSize={0} />
+            <DataTable columns={columns} data={recentOrders} rowKey="id" pageSize={0} />
           </CardContent>
         </Card>
       </Container>

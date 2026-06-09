@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { SortDirection, SortState } from "@/types";
+import type { SortState } from "@/types";
 
 export interface Column<T> {
   key: keyof T & string;
@@ -25,6 +25,8 @@ export interface Column<T> {
 interface DataTableProps<T> {
   columns: Column<T>[];
   data: T[];
+  /** 각 행의 고유 키로 사용할 필드명 */
+  rowKey: keyof T & string;
   /** 행당 항목 수 (0이면 페이지네이션 없음) */
   pageSize?: number;
   className?: string;
@@ -41,6 +43,7 @@ function SortIcon({ column, sort }: { column: string; sort: SortState | null }) 
 export function DataTable<T extends object>({
   columns,
   data,
+  rowKey,
   pageSize = 10,
   className,
 }: DataTableProps<T>) {
@@ -99,8 +102,8 @@ export function DataTable<T extends object>({
                 </TableCell>
               </TableRow>
             ) : (
-              paginated.map((row, rowIdx) => (
-                <TableRow key={rowIdx}>
+              paginated.map((row) => (
+                <TableRow key={String((row as Record<string, unknown>)[rowKey])}>
                   {columns.map((col) => (
                     <TableCell key={col.key} className={col.className}>
                       {col.render

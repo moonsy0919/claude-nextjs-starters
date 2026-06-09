@@ -18,7 +18,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
 import type { NavItem } from "@/types";
 
 const sidebarItems: NavItem[] = [
@@ -57,7 +56,7 @@ function SidebarNav({ onNavClick }: { onNavClick?: () => void }) {
 
 /** 데스크탑: 고정 사이드바 / 모바일: Sheet 드로어 */
 export function Sidebar() {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 768px)", { initializeWithValue: false });
 
   if (isDesktop) {
     return (

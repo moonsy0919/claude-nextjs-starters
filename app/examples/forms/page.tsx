@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -206,15 +206,14 @@ function ContactFormSection() {
     register,
     handleSubmit,
     control,
-    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ContactFields>({
     defaultValues: { category: "", message: "", agreed: false },
   });
 
-  const messageValue = watch("message", "");
-  const agreedValue = watch("agreed", false);
+  const messageValue = useWatch({ control, name: "message", defaultValue: "" });
+  const agreedValue = useWatch({ control, name: "agreed", defaultValue: false });
 
   const onSubmit = async (data: ContactFields) => {
     await new Promise((r) => setTimeout(r, 800));
